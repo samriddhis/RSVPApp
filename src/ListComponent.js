@@ -10,6 +10,7 @@ export default class ListDetailComponent extends React.Component {
   render() {
     return <View style={styles.OuterContainerStyle}>
       <HeaderComponent/>
+      <Text>list component</Text>
     </View>;
   }
 }

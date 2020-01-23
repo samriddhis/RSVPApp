@@ -15,14 +15,6 @@ export default class DrawerComponent extends Component {
   constructor(props) {
     super(props);
   }
-  navigateToScreen = route => () => {
-    const navigateAction = NavigationActions.navigate({
-      routeName: route
-    });
-    this.props.navigation.dispatch(navigateAction);
-    this.props.navigation.dispatch(DrawerActions.closeDrawer());
-  };
-
 
   render() {
     return (
@@ -30,12 +22,12 @@ export default class DrawerComponent extends Component {
         <ScrollView>
           <TouchableOpacity style={styles.ProfilePicStyle}>
             <Icon type="font-awesome" name="user-circle-o" size={20} />
-            <Text style={styles.ProfileTextStyle}>Hello RSVPaPP</Text>
+            <Text style={styles.ProfileTextStyle}>Hello RSVPApp</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.NavHeaderStyle}
-            onPress={this.navigateToScreen("HomeScreen")}
+            onPress={() => this.props.navigation.navigate("HomeScreen")}
           >
             <Icon type="simple-line-icon" name="home" size={20} />
             <Text style={styles.NavHeaderTextStyle}>Home</Text>
@@ -43,14 +35,14 @@ export default class DrawerComponent extends Component {
 
           <TouchableOpacity
             style={styles.NavHeaderStyle}
-            onPress={this.navigateToScreen("ListScreen")}
+            onPress={() => this.props.navigation.navigate("ListScreen")}
           >
             <Icon
               type="material-community"
-              name="account-circle-outline"
+              name="database"
               size={23}
             />
-            <Text style={styles.NavHeaderTextStyle}>My Account</Text>
+            <Text style={styles.NavHeaderTextStyle}>List</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

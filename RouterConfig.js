@@ -1,29 +1,16 @@
-import { createDrawerNavigator ,createStackNavigator } from "react-navigation";
+import React, { Component } from "react";
+import { DrawerNavigator} from "react-navigation";
 import HomeComponent from "./src/HomeComponent";
 import ListComponent from "./src/ListComponent";
 import DrawerComponent from "./src/DrawerComponent";
 
-const MyDrawerNavigator = createDrawerNavigator(
+const HomeScreenRouter = DrawerNavigator(
   {
-    HomeScreen: HomeComponent,
-    ListScreen: ListComponent
+    HomeScreen: { screen: HomeComponent },
+    ListScreen: { screen: ListComponent }
   },
   {
-    contentComponent: DrawerComponent,
-    drawerWidth: 300
+    contentComponent: props => <DrawerComponent {...props}/>
   }
 );
-
-const MyStackNavigator = createStackNavigator(
-  {
-    HomeScreen:HomeComponent,
-    DrawerNavigator: MyDrawerNavigator
-  },
-  {
-    initialRouteName: "HomeScreen",
-    headerMode: "none"
-  }
-);
-
-
-export default MyStackNavigator;
+export default HomeScreenRouter;
