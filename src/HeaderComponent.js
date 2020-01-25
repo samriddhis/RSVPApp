@@ -39,7 +39,7 @@ const Styles = StyleSheet.create({
   OuterContainer: {
     height: 50,
     width: width,
-    backgroundColor: "#33809a",
+    backgroundColor: "#00b5ec",
     flexDirection: "row",
     padding: 10,
     elevation: 10
