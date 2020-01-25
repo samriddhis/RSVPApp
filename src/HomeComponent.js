@@ -4,32 +4,119 @@ import {
   Text,
   View,
   TextInput,
-  Button,
+  Keyboard,
   TouchableHighlight,
-  Dimensions
+  Dimensions,
+  ActivityIndicator,
+  Modal
 } from "react-native";
 import { Icon } from "react-native-elements";
 import HeaderComponent from "./HeaderComponent.js";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 const { width, height } = Dimensions.get("window");
 
 export default class HomeComponent extends Component {
   constructor(props) {
     super(props);
-    state = {
+    this.state = {
+      fullName: "",
+      age: "",
+      dob: "",
+      locality: "",
+      noOfGuest: "",
+      address: "",
+      showLoadMask: false,
+      isDateTimePickerVisible: false
+    };
+    navigationVar = this.props.navigation;
+  }
+  onClickListener() {
+    this.setState({ showLoadMask: true });
+    this.getResponseForCall();
+  }
+  _clearValue() {
+    this.setState({
       fullName: "",
       age: "",
       dob: "",
       locality: "",
       noOfGuest: "",
       address: ""
-    };
-    navigationVar = this.props.navigation;
+    });
   }
+
+  async getResponseForCall() {
+    try {
+      let resp = await this.apiCall();
+      if (resp) {
+        alert("User has been saved successfully.");
+        this.setState({ showLoadMask: false });
+        this._clearValue();
+      } else {
+        alert("Oops,something went wrong!");
+        this.setState({ showLoadMask: false });
+      }
+    } catch (error) {
+      alert("Oops,something went wrong!");
+      this.setState({ showLoadMask: false });
+    }
+  }
+
+  apiCall() {
+    return new Promise(function(resolve, reject) {
+      try {
+        fetch(
+          "https://f4f0561d-3b8a-4321-a34e-799bd11b90a6.mock.pstmn.io/saveUser",
+          {
+            method: "GET"
+          }
+        )
+          .then(response => resolve(true))
+          .catch(error => {
+            console.log(error);
+            reject(error);
+          });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  _handleDatePicked = date => {
+    console.log(date);
+    this.setState({ dob: date });
+  };
+
+  _showDateTimePicker = () => {
+    Keyboard.dismiss();
+    this.setState({ isDateTimePickerVisible: true });
+  };
+
+  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
   render() {
     return (
-      <View style={styles.OuterContainer}>
+      <View style={styles.outerContainer}>
         <HeaderComponent />
+        {this.state.showLoadMask ? (
+          <Modal
+            transparent={true}
+            animationType={"none"}
+            visible={this.state.showLoadMask}
+          >
+            <View style={styles.modalBackground}>
+              <View style={styles.activityIndicatorWrapper}>
+                <Text style={styles.loadingTxtStyle}>Loading.....</Text>
+                <ActivityIndicator
+                  animating={this.state.showLoadMask}
+                  color="#00b5ec"
+                />
+              </View>
+            </View>
+          </Modal>
+        ) : (
+          <View />
+        )}
         <View style={styles.container}>
           <View style={styles.inputContainer}>
             <Icon
@@ -43,6 +130,7 @@ export default class HomeComponent extends Component {
               style={styles.inputs}
               placeholder="Full name"
               underlineColorAndroid="gray"
+              value={this.state.fullName}
               onChangeText={fullName => this.setState({ fullName })}
             />
           </View>
@@ -60,6 +148,7 @@ export default class HomeComponent extends Component {
               placeholder="Age"
               keyboardType="numeric"
               underlineColorAndroid="gray"
+              value={this.state.age}
               onChangeText={age => this.setState({ age })}
             />
           </View>
@@ -76,7 +165,9 @@ export default class HomeComponent extends Component {
               style={styles.inputs}
               placeholder="DOB"
               underlineColorAndroid="gray"
-              onChangeText={dob => this.setState({ dob })}
+              value={this.state.dob}
+              KeyboardType={"none"}
+              onFocus={() => this._showDateTimePicker()}
             />
           </View>
 
@@ -92,6 +183,7 @@ export default class HomeComponent extends Component {
               style={styles.inputs}
               placeholder="Locality"
               underlineColorAndroid="gray"
+              value={this.state.locality}
               onChangeText={locality => this.setState({ locality })}
             />
           </View>
@@ -109,6 +201,7 @@ export default class HomeComponent extends Component {
               placeholder="Number of Guest"
               underlineColorAndroid="gray"
               keyboardType="numeric"
+              value={this.state.value}
               onChangeText={noOfGuest => this.setState({ noOfGuest })}
             />
           </View>
@@ -125,24 +218,31 @@ export default class HomeComponent extends Component {
               style={styles.inputs}
               placeholder="Address"
               underlineColorAndroid="gray"
+              value={this.state.value}
               onChangeText={address => this.setState({ address })}
             />
           </View>
 
           <TouchableHighlight
             style={[styles.buttonContainer, styles.signupButton]}
-            onPress={() => this.onClickListener("sign_up")}
+            onPress={() => this.onClickListener()}
           >
             <Text style={styles.signUpText}>Submit</Text>
           </TouchableHighlight>
         </View>
+        <DateTimePickerModal
+          mode="date"
+          isVisible={this.state.isDateTimePickerVisible}
+          onConfirm={this._handleDatePicked}
+          onCancel={this._hideDateTimePicker}
+        />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  OuterContainer: {
+  outerContainer: {
     flex: 1
   },
   container: {
@@ -186,5 +286,24 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: "white"
+  },
+  modalBackground: {
+    flex: 1,
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    backgroundColor: "#00000040"
+  },
+  activityIndicatorWrapper: {
+    backgroundColor: "#FFFFFF",
+    height: 100,
+    width: 100,
+    borderRadius: 10,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-around"
+  },
+  loadingTxtStyle: {
+    color: "gray"
   }
 });

@@ -11,46 +11,116 @@ import {
 
 import data from "../MOCK_DATA.json";
 const { height, width } = Dimensions.get("window");
-import { Icon } from "react-native-elements";
+import { Icon, SearchBar } from "react-native-elements";
 import HeaderComponent from "./HeaderComponent.js";
 
 export default class ListComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { newsData: data, listScrollHeight: 0 };
+    this.state = { listData: data, listScrollHeight: 0, searchValue: "" };
+    this.storeOriginalValue();
+  }
+  storeOriginalValue() {
+    this.arrayHolder = this.state.listData;
   }
   _renderItem = ({ item, index }) => (
     <View style={styles.listViewStyle}>
-      <Text style={styles.stationTextStyle}>Name : {item.Name}</Text>
-      <View style={styles.bikeViewStyle}>
-        <Icon name="bike" type="material-community" />
-        <Text style={styles.bikeTextStyle}>Age:{item.Age}</Text>
+      <View style={styles.innerViewStyle}>
+        <Icon
+          name="user"
+          type="antdesign"
+          color="gray"
+          size={18}
+          style={styles.iconStyle}
+        />
+        <Text style={styles.itemTextStyle}>Name : {item.Name}</Text>
       </View>
-      <View style={styles.docViewStyle}>
-        <Icon name="documents" type="entypo" />
-        <Text style={styles.docTextStyle}>DOB:{item.DOB}</Text>
+      <View style={styles.innerViewStyle}>
+        <Icon
+          name="page"
+          type="foundation"
+          color="gray"
+          size={18}
+          style={styles.iconStyle}
+        />
+        <Text style={styles.itemTextStyle}>Age:{item.Age}</Text>
       </View>
-      <View style={styles.statusViewStyle}>
-        <Text style={styles.statusTextStyle}>
+      <View style={styles.innerViewStyle}>
+        <Icon
+          name="date-range"
+          type="material"
+          color="gray"
+          size={18}
+          style={styles.iconStyle}
+        />
+        <Text style={styles.itemTextStyle}>DOB:{item.Dob}</Text>
+      </View>
+      <View style={styles.innerViewStyle}>
+        <Icon
+          name="location"
+          type="evilicon"
+          color="gray"
+          size={22}
+          style={styles.iconStyle}
+        />
+        <Text style={styles.itemTextStyle}>Locality:{item.Locality}</Text>
+      </View>
+      <View style={styles.innerViewStyle}>
+        <Icon
+          name="users"
+          type="feather"
+          color="gray"
+          size={18}
+          style={styles.iconStyle}
+        />
+        <Text style={styles.itemTextStyle}>
           Number Of Guest:{item.NumberOfGuest}
         </Text>
       </View>
-      <View style={styles.statusViewStyle}>
-        <Text style={styles.statusTextStyle}>Address:{item.Address}</Text>
+      <View style={styles.innerViewStyle}>
+        <Icon
+          name="address"
+          type="entypo"
+          color="gray"
+          size={16}
+          style={styles.iconStyle}
+        />
+        <Text style={styles.itemTextStyle}>Address:{item.Address}</Text>
       </View>
     </View>
   );
+
+  _updateSearch(text) {
+    const searchedData = this.arrayHolder.filter(function(item) {
+      const itemData = item.Name.toUpperCase();
+      const textData = text.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+    this.setState({
+      listData: searchedData,
+      searchValue: text
+    });
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <HeaderComponent />
+        <SearchBar
+          lightTheme={true}
+          placeholder="Type Here..."
+          onChangeText={text => {
+            this._updateSearch(text);
+          }}
+          value={this.state.searchValue}
+        />
         <FlatList
-          style={styles.dataStyle}
+          style={styles.listStyle}
           ref={ref => (this.listRef = ref)}
-          data={this.state.newsData}
+          data={this.state.listData}
           renderItem={this._renderItem}
           keyExtractor={(item, index) => index.toString()}
+          enableEmptySections={true}
           onScroll={event =>
             this.setState({
               listScrollHeight: event.nativeEvent.contentOffset.y
@@ -72,18 +142,7 @@ export default class ListComponent extends React.Component {
                     onPress={() =>
                       this.listRef.scrollToIndex({ animated: true, index: 0 })
                     }
-                    style={{
-                      width: width / 3,
-                      height: height / 20,
-                      borderRadius: width / 30,
-                      shadowOffset: { width: 3, height: 3 },
-                      shadowColor: "black",
-                      shadowOpacity: 0.3,
-                      elevation: 5,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: "#fff"
-                    }}
+                    style={styles.TopButtonStyle}
                   >
                     <Text
                       style={{
@@ -108,68 +167,40 @@ export default class ListComponent extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F6F6F6"
+    backgroundColor: "#EBEBEB"
   },
   separator: {
     width: width,
-    height: height / 40,
+    height: 15,
     backgroundColor: "#ececec"
   },
   listViewStyle: {
     backgroundColor: "#FFFFFF",
-    padding: width / 20
+    padding: 10,
+    borderRadius: 10
   },
-  bikeViewStyle: {
+  innerViewStyle: {
     flexDirection: "row",
+    alignItems: "center"
+  },
+  itemTextStyle: {
+    fontSize: 16,
+    color: "#3498db",
+    marginLeft: 10
+  },
+  TopButtonStyle: {
+    width: width / 3,
+    height: height / 20,
+    borderRadius: width / 30,
+    shadowOffset: { width: 3, height: 3 },
+    shadowColor: "black",
+    shadowOpacity: 0.3,
+    elevation: 5,
     alignItems: "center",
-    marginTop: height / 90,
-    width: width / 7,
-    justifyContent: "space-between"
+    justifyContent: "center",
+    backgroundColor: "#fff"
   },
-  docViewStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: height / 90,
-    width: width / 7,
-    justifyContent: "space-between"
-  },
-  statusViewStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: height / 90
-  },
-  stationTextStyle: {
-    fontWeight: "bold",
-    fontSize: 17
-  },
-  bikeTextStyle: {
-    fontWeight: "bold",
-    fontSize: 17
-  },
-  docTextStyle: {
-    fontWeight: "bold",
-    fontSize: 17
-  },
-  statusTextStyle: {
-    fontWeight: "bold",
-    fontSize: 17
-  },
-  inCircleStyle: {
-    marginTop: 2,
-    marginLeft: 2,
-    width: 13,
-    height: 13,
-    borderRadius: 100 / 2,
-    backgroundColor: "green"
-  },
-  outCircleStyle: {
-    marginTop: 2,
-    marginLeft: 2,
-    width: 13,
-    height: 13,
-    borderRadius: 100 / 2,
-    backgroundColor: "red"
+  listStyle: {
+    padding: 10
   }
 });
