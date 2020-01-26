@@ -26,65 +26,77 @@ export default class ListComponent extends React.Component {
   _renderItem = ({ item, index }) => (
     <View style={styles.listViewStyle}>
       <View style={styles.innerViewStyle}>
-        <Icon
-          name="user"
-          type="antdesign"
-          color="gray"
-          size={18}
-          style={styles.iconStyle}
-        />
+        <View style={styles.iconViewStyle}>
+          <Icon
+            name="user"
+            type="antdesign"
+            color="gray"
+            size={18}
+            style={styles.iconStyle}
+          />
+        </View>
         <Text style={styles.itemTextStyle}>Name : {item.Name}</Text>
       </View>
       <View style={styles.innerViewStyle}>
-        <Icon
-          name="page"
-          type="foundation"
-          color="gray"
-          size={18}
-          style={styles.iconStyle}
-        />
+        <View style={styles.iconViewStyle}>
+          <Icon
+            name="page"
+            type="foundation"
+            color="gray"
+            size={18}
+            style={styles.iconStyle}
+          />
+        </View>
         <Text style={styles.itemTextStyle}>Age:{item.Age}</Text>
       </View>
       <View style={styles.innerViewStyle}>
-        <Icon
-          name="date-range"
-          type="material"
-          color="gray"
-          size={18}
-          style={styles.iconStyle}
-        />
+        <View style={styles.iconViewStyle}>
+          <Icon
+            name="date-range"
+            type="material"
+            color="gray"
+            size={18}
+            style={styles.iconStyle}
+          />
+        </View>
         <Text style={styles.itemTextStyle}>DOB:{item.Dob}</Text>
       </View>
       <View style={styles.innerViewStyle}>
-        <Icon
-          name="location"
-          type="evilicon"
-          color="gray"
-          size={22}
-          style={styles.iconStyle}
-        />
+        <View style={styles.iconViewStyle}>
+          <Icon
+            name="location"
+            type="evilicon"
+            color="gray"
+            size={22}
+            style={styles.iconStyle}
+          />
+        </View>
         <Text style={styles.itemTextStyle}>Locality:{item.Locality}</Text>
       </View>
       <View style={styles.innerViewStyle}>
-        <Icon
-          name="users"
-          type="feather"
-          color="gray"
-          size={18}
-          style={styles.iconStyle}
-        />
+        <View style={styles.iconViewStyle}>
+          <Icon
+            name="users"
+            type="feather"
+            color="gray"
+            size={18}
+            style={styles.iconStyle}
+          />
+        </View>
         <Text style={styles.itemTextStyle}>
           Number Of Guest:{item.NumberOfGuest}
         </Text>
       </View>
       <View style={styles.innerViewStyle}>
-        <Icon
-          name="address"
-          type="entypo"
-          color="gray"
-          size={16}
-          style={styles.iconStyle}
-        />
+        <View style={styles.iconViewStyle}>
+          <Icon
+            name="address"
+            type="entypo"
+            color="gray"
+            size={16}
+            style={styles.iconStyle}
+          />
+        </View>
         <Text style={styles.itemTextStyle}>Address:{item.Address}</Text>
       </View>
     </View>
@@ -92,9 +104,13 @@ export default class ListComponent extends React.Component {
 
   _updateSearch(text) {
     const searchedData = this.arrayHolder.filter(function(item) {
-      const itemData = item.Name.toUpperCase();
+      const itemDataName = item.Name.toUpperCase();
+      const itemDataLoc = item.Locality.toUpperCase();
       const textData = text.toUpperCase();
-      return itemData.indexOf(textData) > -1;
+      return (
+        itemDataLoc.indexOf(textData) > -1 ||
+        itemDataName.indexOf(textData) > -1
+      );
     });
     this.setState({
       listData: searchedData,
@@ -202,5 +218,8 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     padding: 10
+  },
+  iconViewStyle: {
+    width: 20
   }
 });
